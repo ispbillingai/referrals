@@ -47,8 +47,8 @@ function addReferral($referrerId, $referredUserName) {
     $referrer = $stmt->fetch(PDO::FETCH_ASSOC);
     
     // 4) Send Telegram notification
-    $telegramBotToken = '7551425363:AAE_DkEQkeNuV2HI-klIvRaw6_KCqtlNI5s'; 
-    $telegramChatId = '-1002660690732'; // Updated chat ID
+    $telegramBotToken = '8185874928:AAEaroq3xdbngFVJHxcwLStAlFA6Pm620Iw'; 
+    $telegramChatId = '-1002019374578'; // Updated chat ID
     
     $telegramMessage = formatReferralMessage($referrer, $referredUserName);
     sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
