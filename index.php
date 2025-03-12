@@ -8,6 +8,10 @@ require_once __DIR__ . '/functions/telegram_utils.php';
 $weeklyLeaders = getWeeklyLeaders();
 $monthlyLeaders = getMonthlyLeaders();
 
-// Include the leaderboard view
-require_once __DIR__ . '/templates/leaderboard_view.php';
+require_once __DIR__ . '/templates/header.php';
+require_once __DIR__ . '/templates/stats_cards.php';
+require_once __DIR__ . '/templates/main_tabs.php';
+require_once __DIR__ . '/templates/weekly_leaderboard.php';
+require_once __DIR__ . '/templates/monthly_leaderboard.php';
+require_once __DIR__ . '/templates/footer.php';
 ?>
