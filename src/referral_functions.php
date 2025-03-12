@@ -1,3 +1,4 @@
+
 <?php
 // functions/referral_functions.php
 require_once __DIR__ . '/db.php'; // ensures $pdo is set
@@ -151,11 +152,10 @@ function addReferral($referrerId, $referredUserName) {
     
     // 4) Send Telegram notification
     $telegramBotToken = '7551425363:AAE_DkEQkeNuV2HI-klIvRaw6_KCqtlNI5s';
-    $telegramChatId = '-1002660690732'; // Updated chat ID
+    $telegramChatId = '-1002660690732'; // Updated to the correct chat ID
     
     $telegramMessage = formatReferralMessage($referrer, $referredUserName);
     sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
-
     
     return true;
 }
