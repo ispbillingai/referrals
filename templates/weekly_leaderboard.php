@@ -95,7 +95,7 @@
                 elseif ($rank === 3) $medal = '🥉';
                 else                 $medal = $rank;
 
-                // New company display logic with click to view
+                // New company display logic with ispledger.com domain
                 $companiesOutput = '<em class="text-gray-400">No companies</em>';
                 if (isset($leader['companies']) && !empty($leader['companies'])) {
                   $companiesArr = explode(',', $leader['companies']);
@@ -179,21 +179,19 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
     
-    // Set up company view buttons
+    // Set up company view buttons with ispledger.com domain
     weeklySection.querySelectorAll('.view-companies').forEach(button => {
       button.addEventListener('click', function() {
         const companies = JSON.parse(this.dataset.companies);
         const companiesList = document.getElementById('weeklyCompaniesList');
         companiesList.innerHTML = companies.map(company => {
           company = company.trim();
-          if (company.toLowerCase() === 'demo') {
-            return `<div class="py-2 border-b last:border-0">
-              <a href="http://demo.ispledger.com" class="text-blue-600 hover:underline" target="_blank">
-                demo.ispledger.com
-              </a>
-            </div>`;
-          }
-          return `<div class="py-2 border-b last:border-0">${company}</div>`;
+          const companyDomain = company.toLowerCase() + '.ispledger.com';
+          return `<div class="py-2 border-b last:border-0">
+            <a href="http://${companyDomain}" class="text-blue-600 hover:underline" target="_blank">
+              ${company}.ispledger.com
+            </a>
+          </div>`;
         }).join('');
         
         document.getElementById('weeklyCompaniesModal').classList.remove('hidden');

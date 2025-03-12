@@ -1,4 +1,3 @@
-
 <!-- MONTHLY SECTION with Enhanced Design -->
 <section id="monthlySection" class="hidden">
   <h2 class="text-3xl font-bold mb-6 text-gray-800">Monthly Leaderboard</h2>
@@ -65,7 +64,6 @@
             <th class="py-3 px-4 text-left font-medium text-green-600">Referrer</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Companies Referred</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Referrals</th>
-            <th class="py-3 px-4 text-left font-medium text-green-600">Bonus Earned</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Prize</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Total Payout</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Payout Number</th>
@@ -76,11 +74,7 @@
             <?php $rank = 1; ?>
             <?php foreach ($monthlyLeaders as $leader): ?>
               <?php
-                // Only give bonuses to top 3 users as per the requirement
-                $bonus = ($rank <= 3) ? $leader['number_of_referrals'] * 140 : 0;
-                
                 // Prize money based on rank
-                $prize = 0;
                 if ($rank === 1) { 
                   $medal = '🥇';
                   $prize = 5000;
@@ -98,7 +92,7 @@
                   $prize = 0;
                 }
                 
-                $totalPayout = $bonus + $prize;
+                $totalPayout = $prize; // Total payout is now just the prize money
 
                 // New company display logic
                 $companiesOutput = '<em class="text-gray-400">No companies</em>';
@@ -121,7 +115,6 @@
                 <td class="py-4 px-6"><?php echo htmlspecialchars($leader['name']); ?></td>
                 <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
                 <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
-                <td class="py-4 px-6">Ksh <?php echo number_format($bonus, 2); ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($prize, 2); ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
                 <td class="py-4 px-6"><?php echo $payoutNumber; ?></td>
@@ -173,4 +166,3 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
-
