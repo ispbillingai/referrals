@@ -1,4 +1,3 @@
-
 <?php
 // templates/weekly_leaderboard.php
 ?>
@@ -91,6 +90,7 @@
             $totalAmountPaid = 0;
             $totalBonus = 0;
             $totalFinalPayout = 0;
+            $totalEntries = count($weeklyLeaders); // Add total entries counter
             
             foreach ($weeklyLeaders as $leader): 
               // Calculate values
@@ -142,11 +142,13 @@
             ?>
             <!-- Totals Row -->
             <tr class="bg-gray-50 font-bold border-t-2 border-gray-200">
-              <td colspan="3" class="py-3 px-6">TOTALS</td>
+              <td colspan="1" class="py-3 px-6">TOTALS</td>
+              <td class="py-3 px-6"><?php echo $totalEntries; ?> entries</td>
+              <td class="py-3 px-6">--</td>
               <td class="py-3 px-6"><?php echo $totalReferrals; ?></td>
               <td class="py-3 px-6">Ksh <?php echo number_format($totalAmountPaid, 2); ?></td>
               <td class="py-3 px-6">Ksh <?php echo number_format($totalBonus, 2); ?></td>
-              <td class="py-3 px-6">Ksh <?php echo number_format($totalFinalPayout, 2); ?></td>
+              <td class="py-3 px-6">Ksh <?php echo number_format($totalAmountPaid + $totalBonus, 2); ?></td>
               <td class="py-3 px-6">--</td>
             </tr>
           <?php else: ?>

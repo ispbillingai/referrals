@@ -1,4 +1,3 @@
-
 <!-- MONTHLY SECTION with Enhanced Design -->
 <section id="monthlySection" class="hidden">
   <h2 class="text-3xl font-bold mb-6 text-gray-800">Monthly Leaderboard</h2>
@@ -77,6 +76,8 @@
             $totalPrize = 0;
             $totalFinalPayout = 0; // New variable to properly track total payout
             
+            $totalEntries = count($monthlyLeaders); // Add total entries counter
+
             foreach ($monthlyLeaders as $leader):
               // Prize money based on rank
               if ($rank === 1) { 
@@ -130,7 +131,9 @@
           <?php endforeach; ?>
           <!-- Totals Row -->
           <tr class="bg-gray-50 font-bold border-t-2 border-gray-200">
-            <td colspan="3" class="py-3 px-6">TOTALS</td>
+            <td colspan="1" class="py-3 px-6">TOTALS</td>
+            <td class="py-3 px-6"><?php echo $totalEntries; ?> entries</td>
+            <td class="py-3 px-6">--</td>
             <td class="py-3 px-6"><?php echo $totalReferrals; ?></td>
             <td class="py-3 px-6">Ksh <?php echo number_format($totalPrize, 2); ?></td>
             <td class="py-3 px-6">Ksh <?php echo number_format($totalFinalPayout, 2); ?></td>
