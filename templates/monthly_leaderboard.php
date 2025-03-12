@@ -1,3 +1,4 @@
+
 <!-- MONTHLY SECTION with Enhanced Design -->
 <section id="monthlySection" class="hidden">
   <h2 class="text-3xl font-bold mb-6 text-gray-800">Monthly Leaderboard</h2>
@@ -64,8 +65,8 @@
             <th class="py-3 px-4 text-left font-medium text-green-600">Referrer</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Companies Referred</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Referrals</th>
-            <th class="py-3 px-4 text-left font-medium text-green-600">Amount Paid</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Bonus Earned</th>
+            <th class="py-3 px-4 text-left font-medium text-green-600">Prize</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Total Payout</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Payout Number</th>
           </tr>
@@ -77,12 +78,27 @@
               <?php
                 // Only give bonuses to top 3 users as per the requirement
                 $bonus = ($rank <= 3) ? $leader['number_of_referrals'] * 140 : 0;
-                $totalPayout = $leader['total_amount_paid'] + $bonus;
-
-                if     ($rank === 1) $medal = '🥇';
-                elseif ($rank === 2) $medal = '🥈';
-                elseif ($rank === 3) $medal = '🥉';
-                else                 $medal = $rank;
+                
+                // Prize money based on rank
+                $prize = 0;
+                if ($rank === 1) { 
+                  $medal = '🥇';
+                  $prize = 5000;
+                } elseif ($rank === 2) { 
+                  $medal = '🥈';
+                  $prize = 3000;
+                } elseif ($rank === 3) { 
+                  $medal = '🥉';
+                  $prize = 2000;
+                } elseif ($rank === 4 || $rank === 5) {
+                  $medal = $rank;
+                  $prize = 500;
+                } else {
+                  $medal = $rank;
+                  $prize = 0;
+                }
+                
+                $totalPayout = $bonus + $prize;
 
                 // New company display logic
                 $companiesOutput = '<em class="text-gray-400">No companies</em>';
@@ -105,8 +121,8 @@
                 <td class="py-4 px-6"><?php echo htmlspecialchars($leader['name']); ?></td>
                 <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
                 <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
-                <td class="py-4 px-6">Ksh <?php echo number_format($leader['total_amount_paid'], 2); ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($bonus, 2); ?></td>
+                <td class="py-4 px-6">Ksh <?php echo number_format($prize, 2); ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
                 <td class="py-4 px-6"><?php echo $payoutNumber; ?></td>
               </tr>
@@ -143,14 +159,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const companiesList = document.getElementById('companiesList');
       companiesList.innerHTML = companies.map(company => {
         company = company.trim();
-        if (company.toLowerCase() === 'demo') {
-          return `<div class="py-2 border-b last:border-0">
-            <a href="http://demo.ispledger.com" class="text-blue-600 hover:underline" target="_blank">
-              demo.ispledger.com
-            </a>
-          </div>`;
-        }
-        return `<div class="py-2 border-b last:border-0">${company}</div>`;
+        // Create a link with .ispledger.com for all companies
+        const companyDomain = company.toLowerCase() + '.ispledger.com';
+        return `<div class="py-2 border-b last:border-0">
+          <a href="http://${companyDomain}" class="text-blue-600 hover:underline" target="_blank">
+            ${company}.ispledger.com
+          </a>
+        </div>`;
       }).join('');
       
       document.getElementById('companiesModal').classList.remove('hidden');
@@ -158,3 +173,4 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+
