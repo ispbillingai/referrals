@@ -154,7 +154,7 @@ try {
 
     // 4. Send Telegram notification
     $telegramBotToken = '8185874928:AAEaroq3xdbngFVJHxcwLStAlFA6Pm620Iw'; 
-    $telegramChatId = '-1002019374578'; // Updated to correct chat ID
+    $telegramChatId = '-1002660690732'; // Updated to correct chat ID
     
     $telegramMessage = formatReferralMessage($referrer, $data['referred_user_name']);
     sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
