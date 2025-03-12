@@ -17,11 +17,18 @@
 function sendTelegramMessage($botToken, $chatId, $message) {
     $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
     
+    // Add debug logging
+    error_log("Sending Telegram message to chat ID: {$chatId}");
+    error_log("Message content: " . substr($message, 0, 100) . (strlen($message) > 100 ? '...' : ''));
+    
     $postData = [
         'chat_id' => $chatId,
         'text' => $message,
         'parse_mode' => 'HTML'
     ];
+    
+    // Debug post data
+    error_log("POST data: " . json_encode($postData));
     
     $options = [
         'http' => [
@@ -32,15 +39,33 @@ function sendTelegramMessage($botToken, $chatId, $message) {
     ];
     
     $context = stream_context_create($options);
+    
+    // Try to send the message and capture any response
     $result = @file_get_contents($url, false, $context);
     
     if ($result === FALSE) {
-        error_log("Error sending Telegram message: " . error_get_last()['message']);
+        $error = error_get_last();
+        error_log("Error sending Telegram message: " . ($error ? $error['message'] : 'Unknown error'));
+        
+        // Additional debugging - try to get response headers
+        $http_response_header_debug = isset($http_response_header) ? implode("\n", $http_response_header) : 'No response headers';
+        error_log("Response headers: " . $http_response_header_debug);
+        
         return false;
     }
     
+    // Log the actual response
+    error_log("Telegram API response: " . $result);
+    
     $response = json_decode($result, true);
-    return isset($response['ok']) && $response['ok'] === true;
+    
+    if (!isset($response['ok']) || $response['ok'] !== true) {
+        // Log the error details from Telegram
+        error_log("Telegram API error: " . json_encode($response));
+        return false;
+    }
+    
+    return true;
 }
 
 /**
@@ -51,9 +76,13 @@ function sendTelegramMessage($botToken, $chatId, $message) {
  * @return string The formatted message
  */
 function formatReferralMessage($referrerData, $referredUserName) {
+    // Debug the referrer data to see what we're working with
+    error_log("Referrer data for message: " . json_encode($referrerData));
+    
     $message = "<b>📣 New Referral Update!</b>\n\n";
     $message .= "Referrer <b>{$referrerData['name']}</b> has referred <b>{$referredUserName}</b>.\n\n";
     $message .= "Check your standing on the leaderboard: <a href='https://referrals.ispledger.com'>referrals.ispledger.com</a>";
     
     return $message;
 }
+
