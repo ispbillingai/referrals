@@ -81,8 +81,8 @@ function formatReferralMessage($referrerData, $referredUserName) {
     error_log("Referrer data for message: " . json_encode($referrerData));
     
     $message = "<b>📣 New Referral Update!</b>\n\n";
-    $message .= "Referrer <b>{$referrerData['name']}</b> has referred <b>{$referredUserName}</b>.\n\n";
-    $message .= "Check your standing on the leaderboard: <a href='https://referrals.ispledger.com'>referrals.ispledger.com</a>";
+    $message .= "Hello <b>{$referrerData['name']}</b>, your referral <b>{$referredUserName}</b> has been successfully signed up!</b>.\n\n";
+    $message .= "Check your standing and payout amount on the leaderboard: <a href='https://referrals.ispledger.com'>referrals.ispledger.com</a>";
     
     return $message;
 }
