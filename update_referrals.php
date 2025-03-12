@@ -57,8 +57,13 @@ try {
     $referrer = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$referrer) {
-        // No matching referrer found, so create a new referrer record
-        try {
+        // No matching referrer found by name, check if exists by phone number
+        $stmt = $pdo->prepare("SELECT id, name, phone_number FROM referrers WHERE phone_number = :phone_number LIMIT 1");
+        $stmt->execute([':phone_number' => $data['phone_number']]);
+        $referrer = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$referrer) {
+            // Neither name nor phone number found, create a new referrer record
             $stmt = $pdo->prepare("
                 INSERT INTO referrers (name, phone_number, total_referrals, total_amount_paid, total_bonuses) 
                 VALUES (:name, :phone_number, 0, 0, 0)
@@ -67,24 +72,16 @@ try {
                 ':name'         => $data['company_name'],
                 ':phone_number' => $data['phone_number']
             ]);
+            
             // Get the new referrer's ID
             $referrerId = $pdo->lastInsertId();
+            
             // Prepare a minimal referrer array for later use
-            $referrer = ['id' => $referrerId, 'name' => $data['company_name'], 'phone_number' => $data['phone_number']];
-        } catch (PDOException $e) {
-            // If the error is a duplicate entry for phone_number, try to get the existing referrer
-            if ($e->getCode() == '23000' && strpos($e->getMessage(), 'Duplicate entry') !== false && strpos($e->getMessage(), 'phone_number') !== false) {
-                $stmt = $pdo->prepare("SELECT id, name, phone_number FROM referrers WHERE phone_number = :phone_number LIMIT 1");
-                $stmt->execute([':phone_number' => $data['phone_number']]);
-                $referrer = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                if (!$referrer) {
-                    throw new Exception("Could not create or find referrer with phone number: " . $data['phone_number']);
-                }
-            } else {
-                // If it's a different error, re-throw it
-                throw $e;
-            }
+            $referrer = [
+                'id' => $referrerId, 
+                'name' => $data['company_name'], 
+                'phone_number' => $data['phone_number']
+            ];
         }
     }
     
@@ -92,7 +89,7 @@ try {
 
     // 2. Insert a new referral record
     $amountPaid   = 700.00;           // Each referral costs 700
-    $referralDate = date('Y-m-d');      // Current date
+    $referralDate = date('Y-m-d');    // Current date
     $stmt = $pdo->prepare("
         INSERT INTO referrals 
             (referrer_id, referred_user_name, company_name, amount_paid, referral_date)

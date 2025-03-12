@@ -81,7 +81,7 @@
                 <td class="py-4 px-6">Ksh <?php echo number_format($leader['total_amount_paid'], 2); ?></td>
                 <td class="py-4 px-6 text-green-600">Ksh <?php echo number_format($bonus, 2); ?></td>
                 <td class="py-4 px-6 font-medium">Ksh <?php echo number_format($totalPayout, 2); ?></td>
-                <td class="py-4 px-6"><?php echo isset($leader['payout_number']) ? $leader['payout_number'] : 'N/A'; ?></td>
+                <td class="py-4 px-6">N/A</td>
               </tr>
               <?php $rank++; ?>
             <?php endforeach; ?>
@@ -112,6 +112,34 @@
 document.addEventListener('DOMContentLoaded', function() {
   const weeklySection = document.getElementById('weeklySection');
   if (weeklySection) {
+    // Set up tab switching
+    weeklySection.querySelectorAll('.weekly-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Hide all content sections
+        weeklySection.querySelectorAll('.weekly-content').forEach(content => {
+          content.classList.add('hidden');
+        });
+        
+        // Remove active class from all tabs
+        weeklySection.querySelectorAll('.weekly-tab').forEach(t => {
+          t.classList.remove('bg-indigo-600', 'text-white', 'shadow-indigo-200');
+          t.classList.add('bg-white', 'text-gray-700');
+        });
+        
+        // Show the selected content
+        const weekNum = this.dataset.week;
+        const targetContent = document.getElementById('week' + weekNum);
+        if (targetContent) {
+          targetContent.classList.remove('hidden');
+        }
+        
+        // Add active class to clicked tab
+        this.classList.remove('bg-white', 'text-gray-700');
+        this.classList.add('bg-indigo-600', 'text-white', 'shadow-indigo-200');
+      });
+    });
+    
+    // Set up company view buttons
     weeklySection.querySelectorAll('.view-companies').forEach(button => {
       button.addEventListener('click', function() {
         const companies = JSON.parse(this.dataset.companies);
