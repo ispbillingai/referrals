@@ -1,4 +1,3 @@
-
 <?php
 // templates/weekly_leaderboard.php
 ?>
@@ -11,21 +10,63 @@
     <?php 
       for ($i = 0; $i < 8; $i++):
         $weekLabel = ($i === 0) ? "Current Week" : "{$i} Week(s) Ago";
+        
+        // Calculate date range for this week
+        $startDate = new DateTime();
+        if ($i > 0) {
+          $startDate->modify("-{$i} week");
+        }
+        // Get to Monday (start of week)
+        $dayOfWeek = $startDate->format('N');
+        $daysToSubtract = $dayOfWeek - 1;
+        $startDate->modify("-{$daysToSubtract} day");
+        
+        // End date is 6 days later (Sunday)
+        $endDate = clone $startDate;
+        $endDate->modify('+6 days');
+        
+        $dateRangeLabel = $startDate->format('M d') . ' - ' . $endDate->format('M d, Y');
     ?>
     <button 
       class="weekly-tab whitespace-nowrap px-4 py-2 rounded-lg shadow-md transition-all duration-300 <?php echo ($i === 0) ? 'bg-indigo-600 text-white shadow-indigo-200' : 'bg-white text-gray-700 hover:bg-gray-50'; ?>"
       data-week="<?php echo $i; ?>"
     >
-      <?php echo $weekLabel; ?>
+      <div class="flex flex-col items-center">
+        <span><?php echo $weekLabel; ?></span>
+        <span class="text-xs mt-1 font-normal"><?php echo $dateRangeLabel; ?></span>
+      </div>
     </button>
     <?php endfor; ?>
   </div>
 
   <?php 
   for ($w = 0; $w < 8; $w++):
-    $weeklyLeaders = getWeeklyLeaders($w); 
+    $weeklyLeaders = getWeeklyLeaders($w);
+    
+    // Calculate date range for display in the content section
+    $startDate = new DateTime();
+    if ($w > 0) {
+      $startDate->modify("-{$w} week");
+    }
+    // Get to Monday (start of week)
+    $dayOfWeek = $startDate->format('N');
+    $daysToSubtract = $dayOfWeek - 1;
+    $startDate->modify("-{$daysToSubtract} day");
+    
+    // End date is 6 days later (Sunday)
+    $endDate = clone $startDate;
+    $endDate->modify('+6 days');
+    
+    $dateRangeLabel = $startDate->format('F d') . ' - ' . $endDate->format('F d, Y');
   ?>
   <div class="weekly-content <?php echo ($w === 0) ? '' : 'hidden'; ?>" id="week<?php echo $w; ?>">
+    <div class="bg-white p-3 rounded-lg shadow-sm mb-4">
+      <h3 class="text-gray-700 font-medium">
+        <?php echo ($w === 0) ? 'Current Week' : $w . ' Week(s) Ago'; ?>: 
+        <span class="font-normal text-gray-500"><?php echo $dateRangeLabel; ?></span>
+      </h3>
+    </div>
+    
     <div class="overflow-x-auto bg-white shadow-lg rounded-2xl mb-8">
       <table class="min-w-full table-auto">
         <thead class="bg-indigo-50">

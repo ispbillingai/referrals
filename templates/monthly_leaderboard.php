@@ -1,4 +1,3 @@
-
 <!-- MONTHLY SECTION with Enhanced Design -->
 <section id="monthlySection" class="hidden">
   <h2 class="text-3xl font-bold mb-6 text-gray-800">Monthly Leaderboard</h2>
@@ -8,12 +7,27 @@
     <?php 
       for ($i = 0; $i < 6; $i++):
         $monthLabel = ($i === 0) ? "Current Month" : "{$i} Month(s) Ago";
+        
+        // Calculate date range for this month
+        $currentDate = new DateTime();
+        if ($i > 0) {
+          $currentDate->modify("-{$i} month");
+        }
+        $monthStart = clone $currentDate;
+        $monthStart->modify('first day of this month');
+        $monthEnd = clone $currentDate;
+        $monthEnd->modify('last day of this month');
+        
+        $dateRangeLabel = $monthStart->format('M d') . ' - ' . $monthEnd->format('M d, Y');
     ?>
     <button 
       class="monthly-tab whitespace-nowrap px-4 py-2 rounded-lg shadow-md transition-all duration-300 <?php echo ($i === 0) ? 'bg-indigo-600 text-white shadow-indigo-200' : 'bg-white text-gray-700 hover:bg-gray-50'; ?>"
       data-month="<?php echo $i; ?>"
     >
-      <?php echo $monthLabel; ?>
+      <div class="flex flex-col items-center">
+        <span><?php echo $monthLabel; ?></span>
+        <span class="text-xs mt-1 font-normal"><?php echo $dateRangeLabel; ?></span>
+      </div>
     </button>
     <?php endfor; ?>
   </div>
@@ -21,8 +35,27 @@
   <?php 
   for ($m = 0; $m < 6; $m++):
     $monthlyLeaders = getMonthlyLeaders($m);
+    
+    // Calculate date range for display in the content section
+    $currentDate = new DateTime();
+    if ($m > 0) {
+      $currentDate->modify("-{$m} month");
+    }
+    $monthStart = clone $currentDate;
+    $monthStart->modify('first day of this month');
+    $monthEnd = clone $currentDate;
+    $monthEnd->modify('last day of this month');
+    
+    $dateRangeLabel = $monthStart->format('F d') . ' - ' . $monthEnd->format('F d, Y');
   ?>
   <div class="monthly-content <?php echo ($m === 0) ? '' : 'hidden'; ?>" id="month<?php echo $m; ?>">
+    <div class="bg-white p-3 rounded-lg shadow-sm mb-4">
+      <h3 class="text-gray-700 font-medium">
+        <?php echo ($m === 0) ? 'Current Month' : $m . ' Month(s) Ago'; ?>: 
+        <span class="font-normal text-gray-500"><?php echo $dateRangeLabel; ?></span>
+      </h3>
+    </div>
+    
     <div class="overflow-x-auto bg-white shadow-lg rounded-2xl mb-8">
       <table class="min-w-full table-auto">
         <thead class="bg-green-50">
