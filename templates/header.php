@@ -23,7 +23,7 @@
       <div class="flex justify-between h-16">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <a href="index.php" class="text-xl font-bold text-indigo-600">ISP Referrals</a>
+            <a href="index.php" class="text-xl font-bold text-indigo-600">Freeispradius Referrals</a>
           </div>
           <div class="hidden md:ml-6 md:flex md:space-x-8">
             <a href="index.php" class="inline-flex items-center px-1 pt-1 border-b-2 <?php echo basename($_SERVER['PHP_SELF']) === 'index.php' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'; ?> text-sm font-medium">
@@ -92,7 +92,7 @@
   <header class="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 text-white px-8 py-20 relative overflow-hidden">
     <div class="max-w-6xl mx-auto relative z-10">
       <h1 class="text-5xl font-bold mb-4 tracking-tight">Referral Leaderboard</h1>
-      <p class="text-xl font-medium opacity-90">Track your impact and compete with fellow referrers</p>
+      <p class="text-xl font-medium opacity-90">We truly appreciate your referrals! As a token of our gratitude, here's a small thank-you from us</p>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-t-[3rem] transform translate-y-1"></div>
   </header>

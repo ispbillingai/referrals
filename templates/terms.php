@@ -11,19 +11,20 @@
     <p class="mb-4">Welcome to our Referral Program. By participating, you agree to these terms:</p>
     
     <h3 class="text-lg font-medium mt-5 mb-2">1. Referral Payments</h3>
-    <p class="mb-4">You are entitled to Ksh 700 for each successful referral. To ensure the integrity of our program and prevent fraud, all referrals undergo verification.</p>
+    <p class="mb-4">You are entitled to Ksh 700 for each successful referral. </p>
     
     <h3 class="text-lg font-medium mt-5 mb-2">2. Verification Process</h3>
     <p class="mb-4">All referred accounts must be active and using the system. Our team will verify that referred accounts are:</p>
     <ul class="list-disc pl-6 mb-4">
-      <li>Authentic businesses or individuals</li>
+      <li>Are not self referral</li>
       <li>Actively using our services</li>
-      <li>Not duplicate accounts</li>
       <li>Not fraudulent or created solely for referral benefits</li>
+      <li>During registration, please ensure you clearly indicate if you are referring a customer. Customers who join and later learn about our referral program often try to assign a friend as their referrer, even when they were not actually referred. This is strictly prohibited. Referrals must be declared at the time of registration, and we will not accept referral claims after an account has already been registered
+      </li>
     </ul>
     
     <h3 class="text-lg font-medium mt-5 mb-2">3. Bonus Payments</h3>
-    <p class="mb-4">Bonuses will only be paid for verified active accounts. The verification process may take up to 30 days from the time of referral.</p>
+    <p class="mb-4">Bonuses will only be paid for verified active accounts and top 3 account weekly referrers. If the account won't be having any transactions you won't be paid the 20% bonus only the Ksh 700 will be paid.</p>
     
     <h3 class="text-lg font-medium mt-5 mb-2">4. Referral Limits</h3>
     <p class="mb-4">There is no limit to how many people you can refer. However, we reserve the right to investigate unusually high volumes of referrals.</p>
@@ -32,7 +33,7 @@
     <p class="mb-4">We reserve the right to modify or terminate the referral program at any time. Changes will be communicated via email or announcements on our platform.</p>
     
     <h3 class="text-lg font-medium mt-5 mb-2">6. Payment Schedule</h3>
-    <p class="mb-4">Referral bonuses are calculated weekly and monthly. Payments are processed according to our standard payment schedule.</p>
+    <p class="mb-4">Referral bonuses are calculated weekly and monthly.Weekly payments are made on Friday. Monthly bonuses will be paid on every 5th the next month. Payments are processed according to our standard payment schedule.</p>
     
     <h3 class="text-lg font-medium mt-5 mb-2">7. Prohibited Activities</h3>
     <p class="mb-4">The following activities are strictly prohibited:</p>

@@ -8,7 +8,7 @@
         <!-- Company Info -->
         <div>
           <h3 class="text-lg font-bold mb-4">Referral Program</h3>
-          <p class="text-gray-400 mb-2">Refer businesses and earn rewards with our competitive referral program.</p>
+          <p class="text-gray-400 mb-2">Refer ISPs earn rewards with our competitive referral program.</p>
           <p class="text-gray-400">© <?php echo date('Y'); ?> ISP Ledger. All rights reserved.</p>
         </div>
 
@@ -28,7 +28,7 @@
           <h3 class="text-lg font-bold mb-4">Contact Us</h3>
           <ul class="space-y-2 text-gray-400">
             <li>Email: support@ispledger.com</li>
-            <li>Phone: +254 700 000 000</li>
+            <li>Phone: +254 769023642</li>
             <li>Address: Nairobi, Kenya</li>
           </ul>
         </div>

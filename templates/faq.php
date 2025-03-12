@@ -13,7 +13,7 @@
     
     <div class="border-b border-gray-200 pb-6">
       <h3 class="text-lg font-medium text-gray-900 mb-2">When do I get paid for my referrals?</h3>
-      <p class="text-gray-700">Referral bonuses are calculated on a weekly and monthly basis. Payments are processed according to our standard payment schedule. Weekly payments are typically processed within 3 business days after the week ends.</p>
+      <p class="text-gray-700">Referral bonuses are calculated on a weekly and monthly basis. Payments are processed according to our standard payment schedule. Weekly payments are paid every Friday and Monthly Bonuses are paid every 5th of the Month</p>
     </div>
     
     <div class="border-b border-gray-200 pb-6">
@@ -23,7 +23,7 @@
     
     <div class="border-b border-gray-200 pb-6">
       <h3 class="text-lg font-medium text-gray-900 mb-2">Are there any prizes for top performers?</h3>
-      <p class="text-gray-700">Yes! Monthly top performers receive additional rewards. The top referrer receives Ksh 5,000, the second place receives Ksh 2,000, and the third place receives Ksh 1,000 on top of their regular referral bonuses.</p>
+      <p class="text-gray-700">Yes! Monthly top performers receive additional rewards. The top referrer receives Ksh 5,000, the second place receives Ksh 3,000, the third place receives Ksh 1,000 and 4th and 5th place receive 500
     </div>
     
     <div class="border-b border-gray-200 pb-6">

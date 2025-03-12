@@ -18,8 +18,8 @@
     </div>
     <div class="p-4 bg-white shadow rounded text-center">
       <h2 class="text-sm text-gray-500">Earning Per Referral</h2>
-      <p class="text-xl font-bold text-green-600">Ksh 140</p>
-      <small class="block text-gray-400">Weekly bonus</small>
+      <p class="text-xl font-bold text-green-600">Ksh 5000</p>
+      <small class="block text-gray-400">Monthly bonus</small>
     </div>
     <div class="p-4 bg-white shadow rounded text-center">
       <h2 class="text-sm text-gray-500">Weekly Leaderboard resets in:</h2>
