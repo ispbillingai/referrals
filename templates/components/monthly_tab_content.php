@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Displays monthly leaderboard content for a specific month
@@ -36,7 +35,7 @@ function displayMonthlyTabContent($monthOffset, $monthlyLeaders) {
               <th class="py-3 px-4 text-left font-medium text-green-600">Companies Referred</th>
               <th class="py-3 px-4 text-left font-medium text-green-600">Referrals</th>
               <th class="py-3 px-4 text-left font-medium text-green-600">Prize</th>
-              <th class="py-3 px-4 text-left font-medium text-green-600">Total Payout</th>
+              <th class="py-3 px-4 text-left font-medium text-green-600">Total Earnings</th>
               <th class="py-3 px-4 text-left font-medium text-green-600">Payout Number</th>
             </tr>
           </thead>
@@ -45,9 +44,9 @@ function displayMonthlyTabContent($monthOffset, $monthlyLeaders) {
               $rank = 1;
               $totalReferrals = 0;
               $totalPrize = 0;
-              $totalFinalPayout = 0; // Variable to properly track total payout
+              $totalEarnings = 0;
               
-              $totalEntries = count($monthlyLeaders); // Total entries counter
+              $totalEntries = count($monthlyLeaders);
 
               foreach ($monthlyLeaders as $leader):
                 // Prize money based on rank
@@ -68,10 +67,14 @@ function displayMonthlyTabContent($monthOffset, $monthlyLeaders) {
                   $prize = 0;
                 }
                 
+                // Calculate total earnings (referrals × 700 + prize)
+                $referralEarnings = $leader['number_of_referrals'] * 700;
+                $totalEarning = $referralEarnings + $prize;
+                
                 // Add to totals
                 $totalReferrals += $leader['number_of_referrals'];
                 $totalPrize += $prize;
-                $totalFinalPayout += $prize; // Sum the prize amount
+                $totalEarnings += $totalEarning;
                 
                 // New company display logic
                 $companiesOutput = '<em class="text-gray-400">No companies</em>';
@@ -95,7 +98,7 @@ function displayMonthlyTabContent($monthOffset, $monthlyLeaders) {
                 <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
                 <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($prize, 2); ?></td>
-                <td class="py-4 px-6">Ksh <?php echo number_format($prize, 2); ?></td>
+                <td class="py-4 px-6">Ksh <?php echo number_format($totalEarning, 2); ?></td>
                 <td class="py-4 px-6"><?php echo $payoutNumber; ?></td>
               </tr>
               <?php $rank++; ?>
@@ -107,7 +110,7 @@ function displayMonthlyTabContent($monthOffset, $monthlyLeaders) {
               <td class="py-3 px-6">--</td>
               <td class="py-3 px-6"><?php echo $totalReferrals; ?></td>
               <td class="py-3 px-6">Ksh <?php echo number_format($totalPrize, 2); ?></td>
-              <td class="py-3 px-6">Ksh <?php echo number_format($totalFinalPayout, 2); ?></td>
+              <td class="py-3 px-6">Ksh <?php echo number_format($totalEarnings, 2); ?></td>
               <td class="py-3 px-6">--</td>
             </tr>
           <?php else: ?>
