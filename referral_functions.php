@@ -3,7 +3,7 @@
 // referral_functions.php
 
 require_once 'config.php';
-require_once __DIR__ . '/telegram_utils.php';
+require_once __DIR__ . '/functions/telegram_utils.php';
 
 function addReferral($referrerId, $referredUserName) {
     global $pdo;
