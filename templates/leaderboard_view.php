@@ -1,3 +1,4 @@
+
 <!-- templates/leaderboard_view.php -->
 <div class="bg-gray-50 min-h-screen">
   <header class="text-center py-8">
