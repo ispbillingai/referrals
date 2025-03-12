@@ -48,6 +48,7 @@ if (strtolower($data['company_name']) === 'freeispradius') {
 }
 
 require_once 'config.php';
+require_once 'telegram_utils.php';
 
 try {
     // 1. Look up the referrer by company_name (using the 'name' column)
@@ -151,7 +152,14 @@ try {
         ':referrer_id' => $referrerId
     ]);
 
-    // 4. Return a success JSON response
+    // 4. Send Telegram notification
+    $telegramBotToken = ''; // Replace with your Telegram bot token
+    $telegramChatId = '123456677'; // The chat ID provided by the user
+    
+    $telegramMessage = formatReferralMessage($referrer, $data['referred_user_name']);
+    sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
+
+    // 5. Return a success JSON response
     echo json_encode([
         'status'  => 'success',
         'message' => 'Referral updated successfully for referrer: ' . $referrer['name']
