@@ -1,7 +1,4 @@
 
-<?php
-// templates/monthly_leaderboard.php
-?>
 <!-- MONTHLY SECTION with Enhanced Design -->
 <section id="monthlySection" class="hidden">
   <h2 class="text-3xl font-bold mb-6 text-gray-800">Monthly Leaderboard</h2>
@@ -45,7 +42,7 @@
             <?php $rank = 1; ?>
             <?php foreach ($monthlyLeaders as $leader): ?>
               <?php
-                $bonus       = $leader['number_of_referrals'] * 140;
+                $bonus = $leader['number_of_referrals'] * 140;
                 $totalPayout = $leader['total_amount_paid'] + $bonus;
 
                 if     ($rank === 1) $medal = '🥇';
@@ -53,30 +50,39 @@
                 elseif ($rank === 3) $medal = '🥉';
                 else                 $medal = $rank;
 
-                $companiesOutput = '<em>No companies</em>';
-                if (isset($leader['companies']) && !empty($leader['companies'])) {
-                  $companiesArr = explode(',', $leader['companies']);
-                  $companyLinks = [];
-                  foreach ($companiesArr as $c) {
-                    $c = trim($c);
-                    if (strtolower($c) === 'demo') {
-                      $companyLinks[] = '<a href="http://demo.ispledger.com" class="text-blue-600 hover:underline" target="_blank">demo</a>';
-                    } else {
-                      $companyLinks[] = htmlspecialchars($c);
-                    }
+                // New company display logic
+                $companiesOutput = '<em class="text-gray-400">No companies</em>';
+                if (isset($leader['company_name']) && !empty($leader['company_name'])) {
+                  $companiesArr = explode(',', $leader['company_name']);
+                  $totalCompanies = count($companiesArr);
+                  $firstCompany = trim($companiesArr[0]);
+                  
+                  if (strtolower($firstCompany) === 'demo') {
+                    $companiesOutput = '<div class="flex items-center gap-2">
+                      <a href="http://demo.ispledger.com" class="text-blue-600 hover:underline" target="_blank">demo.ispledger.com</a>
+                      <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors view-companies" data-companies="' . htmlspecialchars(json_encode($companiesArr)) . '">
+                        +' . ($totalCompanies - 1) . ' more
+                      </button>
+                    </div>';
+                  } else {
+                    $companiesOutput = '<div class="flex items-center gap-2">
+                      <span>' . htmlspecialchars($firstCompany) . '</span>
+                      <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors view-companies" data-companies="' . htmlspecialchars(json_encode($companiesArr)) . '">
+                        +' . ($totalCompanies - 1) . ' more
+                      </button>
+                    </div>';
                   }
-                  $companiesOutput = implode(', ', $companyLinks);
                 }
               ?>
-              <tr class="border-b">
-                <td class="py-2 px-4"><?php echo $medal; ?></td>
-                <td class="py-2 px-4"><?php echo htmlspecialchars($leader['name']); ?></td>
-                <td class="py-2 px-4"><?php echo $companiesOutput; ?></td>
-                <td class="py-2 px-4"><?php echo $leader['number_of_referrals']; ?></td>
-                <td class="py-2 px-4">Ksh <?php echo number_format($leader['total_amount_paid'], 2); ?></td>
-                <td class="py-2 px-4">Ksh <?php echo number_format($bonus, 2); ?></td>
-                <td class="py-2 px-4">Ksh <?php echo number_format($totalPayout, 2); ?></td>
-                <td class="py-2 px-4">Ksh <?php echo number_format($totalPayout, 2); ?></td>
+              <tr class="border-b hover:bg-gray-50 transition-colors">
+                <td class="py-4 px-6"><?php echo $medal; ?></td>
+                <td class="py-4 px-6"><?php echo htmlspecialchars($leader['name']); ?></td>
+                <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
+                <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
+                <td class="py-4 px-6">Ksh <?php echo number_format($leader['total_amount_paid'], 2); ?></td>
+                <td class="py-4 px-6">Ksh <?php echo number_format($bonus, 2); ?></td>
+                <td class="py-4 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
+                <td class="py-4 px-6"><?php echo isset($leader['payout_number']) ? $leader['payout_number'] : 'N/A'; ?></td>
               </tr>
               <?php $rank++; ?>
             <?php endforeach; ?>
@@ -90,4 +96,40 @@
     </div>
   </div>
   <?php endfor; ?>
+
+  <!-- Companies Modal -->
+  <div id="companiesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+      <h3 class="text-lg font-bold mb-4">Referred Companies</h3>
+      <div id="companiesList" class="max-h-60 overflow-y-auto"></div>
+      <button class="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors" onclick="document.getElementById('companiesModal').classList.add('hidden')">
+        Close
+      </button>
+    </div>
+  </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.view-companies').forEach(button => {
+    button.addEventListener('click', function() {
+      const companies = JSON.parse(this.dataset.companies);
+      const companiesList = document.getElementById('companiesList');
+      companiesList.innerHTML = companies.map(company => {
+        company = company.trim();
+        if (company.toLowerCase() === 'demo') {
+          return `<div class="py-2 border-b last:border-0">
+            <a href="http://demo.ispledger.com" class="text-blue-600 hover:underline" target="_blank">
+              demo.ispledger.com
+            </a>
+          </div>`;
+        }
+        return `<div class="py-2 border-b last:border-0">${company}</div>`;
+      }).join('');
+      
+      document.getElementById('companiesModal').classList.remove('hidden');
+    });
+  });
+});
+</script>
+

@@ -1,4 +1,3 @@
-
 <?php
 // functions/referral_functions.php
 require_once __DIR__ . '/db.php'; // ensures $pdo is set
@@ -14,10 +13,11 @@ function getMonthlyLeaders($offset = 0) {
     $sql = "
         SELECT r.id,
                r.name,
-               GROUP_CONCAT(DISTINCT ref.referred_user_name) AS companies,
+               GROUP_CONCAT(DISTINCT ref.company_name) AS company_name,
                COUNT(ref.id) AS number_of_referrals,
                SUM(ref.amount_paid) AS total_amount_paid,
-               COUNT(ref.id) * 140 AS total_bonuses
+               COUNT(ref.id) * 140 AS total_bonuses,
+               MAX(ref.payout_number) as payout_number
         FROM referrers r
         LEFT JOIN referrals ref
                ON r.id = ref.referrer_id
