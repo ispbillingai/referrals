@@ -1,3 +1,4 @@
+
 <?php
 // templates/weekly_leaderboard.php
 ?>
@@ -89,7 +90,7 @@
             $totalReferrals = 0;
             $totalAmountPaid = 0;
             $totalBonus = 0;
-            $totalPayout = 0;
+            $totalFinalPayout = 0;
             
             foreach ($weeklyLeaders as $leader): 
               // Calculate values
@@ -100,7 +101,7 @@
               $totalReferrals += $leader['number_of_referrals'];
               $totalAmountPaid += $leader['total_amount_paid'];
               $totalBonus += $bonus;
-              $totalPayout += $leader['total_amount_paid'];
+              $totalFinalPayout += $totalPayout; // Fix: Use individual row's total payout
               
               if     ($rank === 1) $medal = '🥇';
               elseif ($rank === 2) $medal = '🥈';
@@ -145,7 +146,7 @@
               <td class="py-3 px-6"><?php echo $totalReferrals; ?></td>
               <td class="py-3 px-6">Ksh <?php echo number_format($totalAmountPaid, 2); ?></td>
               <td class="py-3 px-6">Ksh <?php echo number_format($totalBonus, 2); ?></td>
-              <td class="py-3 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
+              <td class="py-3 px-6">Ksh <?php echo number_format($totalFinalPayout, 2); ?></td>
               <td class="py-3 px-6">--</td>
             </tr>
           <?php else: ?>

@@ -1,3 +1,4 @@
+
 <!-- MONTHLY SECTION with Enhanced Design -->
 <section id="monthlySection" class="hidden">
   <h2 class="text-3xl font-bold mb-6 text-gray-800">Monthly Leaderboard</h2>
@@ -74,7 +75,7 @@
             $rank = 1;
             $totalReferrals = 0;
             $totalPrize = 0;
-            $totalPayout = 0;
+            $totalFinalPayout = 0; // New variable to properly track total payout
             
             foreach ($monthlyLeaders as $leader):
               // Prize money based on rank
@@ -98,7 +99,7 @@
               // Add to totals
               $totalReferrals += $leader['number_of_referrals'];
               $totalPrize += $prize;
-              $totalPayout += $prize;
+              $totalFinalPayout += $prize; // Fix: This now properly sums the prize amount
               
               // New company display logic
               $companiesOutput = '<em class="text-gray-400">No companies</em>';
@@ -122,18 +123,17 @@
               <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
               <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
               <td class="py-4 px-6">Ksh <?php echo number_format($prize, 2); ?></td>
-              <td class="py-4 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
+              <td class="py-4 px-6">Ksh <?php echo number_format($prize, 2); ?></td>
               <td class="py-4 px-6"><?php echo $payoutNumber; ?></td>
             </tr>
             <?php $rank++; ?>
           <?php endforeach; ?>
           <!-- Totals Row -->
           <tr class="bg-gray-50 font-bold border-t-2 border-gray-200">
-            <td colspan="2" class="py-3 px-6">TOTALS</td>
-            <td class="py-3 px-6"><?php echo $totalReferrals; ?></td>
+            <td colspan="3" class="py-3 px-6">TOTALS</td>
             <td class="py-3 px-6"><?php echo $totalReferrals; ?></td>
             <td class="py-3 px-6">Ksh <?php echo number_format($totalPrize, 2); ?></td>
-            <td class="py-3 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
+            <td class="py-3 px-6">Ksh <?php echo number_format($totalFinalPayout, 2); ?></td>
             <td class="py-3 px-6">--</td>
           </tr>
         <?php else: ?>
@@ -161,6 +161,34 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Set up tab switching for monthly section
+  const monthlyTabs = document.querySelectorAll('.monthly-tab');
+  monthlyTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      // Hide all content sections
+      document.querySelectorAll('.monthly-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+      
+      // Remove active class from all tabs
+      monthlyTabs.forEach(t => {
+        t.classList.remove('bg-indigo-600', 'text-white', 'shadow-indigo-200');
+        t.classList.add('bg-white', 'text-gray-700');
+      });
+      
+      // Show the selected content
+      const monthNum = this.dataset.month;
+      const targetContent = document.getElementById('month' + monthNum);
+      if (targetContent) {
+        targetContent.classList.remove('hidden');
+      }
+      
+      // Add active class to clicked tab
+      this.classList.remove('bg-white', 'text-gray-700');
+      this.classList.add('bg-indigo-600', 'text-white', 'shadow-indigo-200');
+    });
+  });
+
   document.querySelectorAll('.view-companies').forEach(button => {
     button.addEventListener('click', function() {
       const companies = JSON.parse(this.dataset.companies);
