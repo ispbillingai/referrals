@@ -14,8 +14,8 @@ function getMonthlyLeaders($offset = 0) {
     $sql = "
         SELECT r.id,
                r.name,
-               r.phone_number,
-               GROUP_CONCAT(DISTINCT ref.company_name) AS company_name,
+               r.phone_number AS payout_number,
+               GROUP_CONCAT(DISTINCT ref.referred_user_name) AS company_name,
                COUNT(ref.id) AS number_of_referrals,
                SUM(ref.amount_paid) AS total_amount_paid,
                COUNT(ref.id) * 140 AS total_bonuses
@@ -46,8 +46,8 @@ function getWeeklyLeaders($offset = 0) {
     $sql = "
         SELECT r.id,
                r.name,
-               r.phone_number,
-               GROUP_CONCAT(DISTINCT ref.company_name) AS companies,
+               r.phone_number AS payout_number,
+               GROUP_CONCAT(DISTINCT ref.referred_user_name) AS companies,
                COUNT(ref.id) AS number_of_referrals,
                SUM(ref.amount_paid) AS total_amount_paid,
                COUNT(ref.id) * 140 AS total_bonuses

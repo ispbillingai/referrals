@@ -29,7 +29,6 @@
           <tr>
             <th class="py-3 px-4 text-left font-medium text-green-600">Rank</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Referrer</th>
-            <th class="py-3 px-4 text-left font-medium text-green-600">Phone Number</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Companies Referred</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Referrals</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Amount Paid</th>
@@ -43,7 +42,8 @@
             <?php $rank = 1; ?>
             <?php foreach ($monthlyLeaders as $leader): ?>
               <?php
-                $bonus = $leader['number_of_referrals'] * 140;
+                // Only give bonuses to top 3 users as per the requirement
+                $bonus = ($rank <= 3) ? $leader['number_of_referrals'] * 140 : 0;
                 $totalPayout = $leader['total_amount_paid'] + $bonus;
 
                 if     ($rank === 1) $medal = '🥇';
@@ -64,25 +64,24 @@
                   </div>';
                 }
                 
-                // Display phone number
-                $phoneNumber = isset($leader['phone_number']) ? htmlspecialchars($leader['phone_number']) : 'N/A';
+                // Display payout number instead of phone number
+                $payoutNumber = isset($leader['payout_number']) ? htmlspecialchars($leader['payout_number']) : 'N/A';
               ?>
               <tr class="border-b hover:bg-gray-50 transition-colors">
                 <td class="py-4 px-6"><?php echo $medal; ?></td>
                 <td class="py-4 px-6"><?php echo htmlspecialchars($leader['name']); ?></td>
-                <td class="py-4 px-6"><?php echo $phoneNumber; ?></td>
                 <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
                 <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($leader['total_amount_paid'], 2); ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($bonus, 2); ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
-                <td class="py-4 px-6"><?php echo isset($leader['payout_number']) ? $leader['payout_number'] : 'N/A'; ?></td>
+                <td class="py-4 px-6"><?php echo $payoutNumber; ?></td>
               </tr>
               <?php $rank++; ?>
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="9" class="py-4 px-4 text-center text-gray-500">No referrals data for this month offset.</td>
+              <td colspan="8" class="py-4 px-4 text-center text-gray-500">No referrals data for this month offset.</td>
             </tr>
           <?php endif; ?>
         </tbody>

@@ -32,7 +32,6 @@
           <tr>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Rank</th>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Referrer</th>
-            <th class="py-4 px-6 text-left font-semibold text-indigo-600">Phone Number</th>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Companies Referred</th>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Referrals</th>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Amount Paid</th>
@@ -46,7 +45,8 @@
             <?php $rank = 1; ?>
             <?php foreach ($weeklyLeaders as $leader): ?>
               <?php
-                $bonus = $leader['number_of_referrals'] * 140;
+                // Only give bonuses to top 3 users as per the requirement
+                $bonus = ($rank <= 3) ? $leader['number_of_referrals'] * 140 : 0;
                 $totalPayout = $leader['total_amount_paid'] + $bonus;
 
                 if     ($rank === 1) $medal = '🥇';
@@ -69,25 +69,24 @@
 
                 $rowClass = $rank <= 3 ? 'bg-gradient-to-r from-indigo-50/50 to-transparent' : '';
                 
-                // Display phone number
-                $phoneNumber = isset($leader['phone_number']) ? htmlspecialchars($leader['phone_number']) : 'N/A';
+                // Display payout number instead of phone number
+                $payoutNumber = isset($leader['payout_number']) ? htmlspecialchars($leader['payout_number']) : 'N/A';
               ?>
               <tr class="border-b hover:bg-gray-50 transition-colors <?php echo $rowClass; ?>">
                 <td class="py-4 px-6 text-xl"><?php echo $medal; ?></td>
                 <td class="py-4 px-6 font-medium"><?php echo htmlspecialchars($leader['name']); ?></td>
-                <td class="py-4 px-6"><?php echo $phoneNumber; ?></td>
                 <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
                 <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($leader['total_amount_paid'], 2); ?></td>
                 <td class="py-4 px-6 text-green-600">Ksh <?php echo number_format($bonus, 2); ?></td>
                 <td class="py-4 px-6 font-medium">Ksh <?php echo number_format($totalPayout, 2); ?></td>
-                <td class="py-4 px-6">N/A</td>
+                <td class="py-4 px-6"><?php echo $payoutNumber; ?></td>
               </tr>
               <?php $rank++; ?>
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="9" class="py-8 px-6 text-center text-gray-500">No referrals data for this week offset.</td>
+              <td colspan="8" class="py-8 px-6 text-center text-gray-500">No referrals data for this week offset.</td>
             </tr>
           <?php endif; ?>
         </tbody>
