@@ -1,3 +1,4 @@
+
 <?php
 /**
  * update_referrals.php
@@ -152,7 +153,7 @@ try {
     ]);
 
     // 4. Send Telegram notification
-    $telegramBotToken = '5865018444:AAFg_SyStyEQocduHGRgsEddi-Wj85pTVSo'; // Miss Rose bot token
+    $telegramBotToken = '7551425363:AAE_DkEQkeNuV2HI-klIvRaw6_KCqtlNI5s'; // Your newly created bot token
     $telegramChatId = '-4602653603'; // Your specified chat ID
     
     $telegramMessage = formatReferralMessage($referrer, $data['referred_user_name']);
