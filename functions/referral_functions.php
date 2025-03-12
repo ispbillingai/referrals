@@ -13,6 +13,7 @@ function getMonthlyLeaders($offset = 0) {
     $sql = "
         SELECT r.id,
                r.name,
+               r.phone_number,
                GROUP_CONCAT(DISTINCT ref.company_name) AS company_name,
                COUNT(ref.id) AS number_of_referrals,
                SUM(ref.amount_paid) AS total_amount_paid,
@@ -23,7 +24,8 @@ function getMonthlyLeaders($offset = 0) {
                ON r.id = ref.referrer_id
                AND MONTH(ref.referral_date) = MONTH(DATE_SUB(CURDATE(), INTERVAL :offset MONTH))
                AND YEAR(ref.referral_date) = YEAR(DATE_SUB(CURDATE(), INTERVAL :offset MONTH))
-        GROUP BY r.id
+        GROUP BY r.id, r.name, r.phone_number
+        HAVING number_of_referrals > 0
         ORDER BY number_of_referrals DESC, total_amount_paid DESC
         LIMIT 10
     ";
@@ -44,15 +46,18 @@ function getWeeklyLeaders($offset = 0) {
     $sql = "
         SELECT r.id,
                r.name,
-               GROUP_CONCAT(DISTINCT ref.referred_user_name) AS companies,
+               r.phone_number,
+               GROUP_CONCAT(DISTINCT ref.company_name) AS companies,
                COUNT(ref.id) AS number_of_referrals,
                SUM(ref.amount_paid) AS total_amount_paid,
-               COUNT(ref.id) * 140 AS total_bonuses
+               COUNT(ref.id) * 140 AS total_bonuses,
+               MAX(ref.payout_number) as payout_number
         FROM referrers r
         LEFT JOIN referrals ref
                ON r.id = ref.referrer_id
                AND YEARWEEK(ref.referral_date, 1) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL :offset WEEK), 1)
-        GROUP BY r.id
+        GROUP BY r.id, r.name, r.phone_number
+        HAVING number_of_referrals > 0
         ORDER BY number_of_referrals DESC, total_amount_paid DESC
         LIMIT 10
     ";

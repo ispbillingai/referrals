@@ -29,6 +29,7 @@
           <tr>
             <th class="py-3 px-4 text-left font-medium text-green-600">Rank</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Referrer</th>
+            <th class="py-3 px-4 text-left font-medium text-green-600">Phone Number</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Companies Referred</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Referrals</th>
             <th class="py-3 px-4 text-left font-medium text-green-600">Amount Paid</th>
@@ -55,28 +56,21 @@
                 if (isset($leader['company_name']) && !empty($leader['company_name'])) {
                   $companiesArr = explode(',', $leader['company_name']);
                   $totalCompanies = count($companiesArr);
-                  $firstCompany = trim($companiesArr[0]);
                   
-                  if (strtolower($firstCompany) === 'demo') {
-                    $companiesOutput = '<div class="flex items-center gap-2">
-                      <a href="http://demo.ispledger.com" class="text-blue-600 hover:underline" target="_blank">demo.ispledger.com</a>
-                      <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors view-companies" data-companies="' . htmlspecialchars(json_encode($companiesArr)) . '">
-                        +' . ($totalCompanies - 1) . ' more
-                      </button>
-                    </div>';
-                  } else {
-                    $companiesOutput = '<div class="flex items-center gap-2">
-                      <span>' . htmlspecialchars($firstCompany) . '</span>
-                      <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors view-companies" data-companies="' . htmlspecialchars(json_encode($companiesArr)) . '">
-                        +' . ($totalCompanies - 1) . ' more
-                      </button>
-                    </div>';
-                  }
+                  $companiesOutput = '<div class="flex items-center gap-2">
+                    <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors view-companies" data-companies="' . htmlspecialchars(json_encode($companiesArr)) . '">
+                      Click to view ' . $totalCompanies . ' companies
+                    </button>
+                  </div>';
                 }
+                
+                // Display phone number
+                $phoneNumber = isset($leader['phone_number']) ? htmlspecialchars($leader['phone_number']) : 'N/A';
               ?>
               <tr class="border-b hover:bg-gray-50 transition-colors">
                 <td class="py-4 px-6"><?php echo $medal; ?></td>
                 <td class="py-4 px-6"><?php echo htmlspecialchars($leader['name']); ?></td>
+                <td class="py-4 px-6"><?php echo $phoneNumber; ?></td>
                 <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
                 <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($leader['total_amount_paid'], 2); ?></td>
@@ -88,7 +82,7 @@
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="8" class="py-4 px-4 text-center text-gray-500">No referrals data for this month offset.</td>
+              <td colspan="9" class="py-4 px-4 text-center text-gray-500">No referrals data for this month offset.</td>
             </tr>
           <?php endif; ?>
         </tbody>
@@ -132,4 +126,3 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
-

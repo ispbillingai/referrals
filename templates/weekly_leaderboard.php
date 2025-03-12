@@ -32,6 +32,7 @@
           <tr>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Rank</th>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Referrer</th>
+            <th class="py-4 px-6 text-left font-semibold text-indigo-600">Phone Number</th>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Companies Referred</th>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Referrals</th>
             <th class="py-4 px-6 text-left font-semibold text-indigo-600">Amount Paid</th>
@@ -53,38 +54,40 @@
                 elseif ($rank === 3) $medal = '🥉';
                 else                 $medal = $rank;
 
-                $companiesOutput = '<em>No companies</em>';
+                // New company display logic with click to view
+                $companiesOutput = '<em class="text-gray-400">No companies</em>';
                 if (isset($leader['companies']) && !empty($leader['companies'])) {
                   $companiesArr = explode(',', $leader['companies']);
-                  $companyLinks = [];
-                  foreach ($companiesArr as $c) {
-                    $c = trim($c);
-                    if (strtolower($c) === 'demo') {
-                      $companyLinks[] = '<a href="http://demo.ispledger.com" class="text-blue-600 hover:underline" target="_blank">demo</a>';
-                    } else {
-                      $companyLinks[] = htmlspecialchars($c);
-                    }
-                  }
-                  $companiesOutput = implode(', ', $companyLinks);
+                  $totalCompanies = count($companiesArr);
+                  
+                  $companiesOutput = '<div class="flex items-center gap-2">
+                    <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors view-companies" data-companies="' . htmlspecialchars(json_encode($companiesArr)) . '">
+                      Click to view ' . $totalCompanies . ' companies
+                    </button>
+                  </div>';
                 }
 
                 $rowClass = $rank <= 3 ? 'bg-gradient-to-r from-indigo-50/50 to-transparent' : '';
+                
+                // Display phone number
+                $phoneNumber = isset($leader['phone_number']) ? htmlspecialchars($leader['phone_number']) : 'N/A';
               ?>
               <tr class="border-b hover:bg-gray-50 transition-colors <?php echo $rowClass; ?>">
                 <td class="py-4 px-6 text-xl"><?php echo $medal; ?></td>
                 <td class="py-4 px-6 font-medium"><?php echo htmlspecialchars($leader['name']); ?></td>
+                <td class="py-4 px-6"><?php echo $phoneNumber; ?></td>
                 <td class="py-4 px-6"><?php echo $companiesOutput; ?></td>
                 <td class="py-4 px-6"><?php echo $leader['number_of_referrals']; ?></td>
                 <td class="py-4 px-6">Ksh <?php echo number_format($leader['total_amount_paid'], 2); ?></td>
                 <td class="py-4 px-6 text-green-600">Ksh <?php echo number_format($bonus, 2); ?></td>
                 <td class="py-4 px-6 font-medium">Ksh <?php echo number_format($totalPayout, 2); ?></td>
-                <td class="py-4 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
+                <td class="py-4 px-6"><?php echo isset($leader['payout_number']) ? $leader['payout_number'] : 'N/A'; ?></td>
               </tr>
               <?php $rank++; ?>
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="8" class="py-8 px-6 text-center text-gray-500">No referrals data for this week offset.</td>
+              <td colspan="9" class="py-8 px-6 text-center text-gray-500">No referrals data for this week offset.</td>
             </tr>
           <?php endif; ?>
         </tbody>
@@ -92,4 +95,42 @@
     </div>
   </div>
   <?php endfor; ?>
+  
+  <!-- Companies Modal (shared with monthly section) -->
+  <div id="weeklyCompaniesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+      <h3 class="text-lg font-bold mb-4">Referred Companies</h3>
+      <div id="weeklyCompaniesList" class="max-h-60 overflow-y-auto"></div>
+      <button class="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors" onclick="document.getElementById('weeklyCompaniesModal').classList.add('hidden')">
+        Close
+      </button>
+    </div>
+  </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const weeklySection = document.getElementById('weeklySection');
+  if (weeklySection) {
+    weeklySection.querySelectorAll('.view-companies').forEach(button => {
+      button.addEventListener('click', function() {
+        const companies = JSON.parse(this.dataset.companies);
+        const companiesList = document.getElementById('weeklyCompaniesList');
+        companiesList.innerHTML = companies.map(company => {
+          company = company.trim();
+          if (company.toLowerCase() === 'demo') {
+            return `<div class="py-2 border-b last:border-0">
+              <a href="http://demo.ispledger.com" class="text-blue-600 hover:underline" target="_blank">
+                demo.ispledger.com
+              </a>
+            </div>`;
+          }
+          return `<div class="py-2 border-b last:border-0">${company}</div>`;
+        }).join('');
+        
+        document.getElementById('weeklyCompaniesModal').classList.remove('hidden');
+      });
+    });
+  }
+});
+</script>
