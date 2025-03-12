@@ -32,7 +32,7 @@ function sendTelegramMessage($botToken, $chatId, $message) {
     ];
     
     $context = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
+    $result = @file_get_contents($url, false, $context);
     
     if ($result === FALSE) {
         error_log("Error sending Telegram message: " . error_get_last()['message']);

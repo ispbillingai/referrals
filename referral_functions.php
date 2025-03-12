@@ -1,7 +1,9 @@
+
 <?php
 // referral_functions.php
 
 require_once 'config.php';
+require_once __DIR__ . '/telegram_utils.php';
 
 function addReferral($referrerId, $referredUserName) {
     global $pdo;
@@ -37,4 +39,17 @@ function addReferral($referrerId, $referredUserName) {
         ':bonus'        => $bonus,
         ':referrer_id'  => $referrerId
     ]);
+    
+    // 3) Get referrer information for notification
+    $sqlGetReferrer = "SELECT * FROM referrers WHERE id = :referrer_id";
+    $stmt = $pdo->prepare($sqlGetReferrer);
+    $stmt->execute([':referrer_id' => $referrerId]);
+    $referrer = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // 4) Send Telegram notification
+    $telegramBotToken = '7551425363:AAE_DkEQkeNuV2HI-klIvRaw6_KCqtlNI5s'; // Your new bot token
+    $telegramChatId = '-4602653603'; // Your group chat ID
+    
+    $telegramMessage = formatReferralMessage($referrer, $referredUserName);
+    sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
 }

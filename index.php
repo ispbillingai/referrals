@@ -2,6 +2,7 @@
 <?php
 // index.php - Main entry point
 require_once __DIR__ . '/functions/referral_functions.php';
+require_once __DIR__ . '/functions/telegram_utils.php';
 require_once __DIR__ . '/templates/header.php';
 require_once __DIR__ . '/templates/stats_cards.php';
 require_once __DIR__ . '/templates/main_tabs.php';
