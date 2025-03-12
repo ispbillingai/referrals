@@ -152,8 +152,8 @@ try {
     ]);
 
     // 4. Send Telegram notification
-    $telegramBotToken = ''; // Replace with your Telegram bot token
-    $telegramChatId = '-4602653603'; // Updated chat ID
+    $telegramBotToken = '5865018444:AAFg_SyStyEQocduHGRgsEddi-Wj85pTVSo'; // Miss Rose bot token
+    $telegramChatId = '-4602653603'; // Your specified chat ID
     
     $telegramMessage = formatReferralMessage($referrer, $data['referred_user_name']);
     sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
