@@ -1,0 +1,40 @@
+<?php
+// referral_functions.php
+
+require_once 'config.php';
+
+function addReferral($referrerId, $referredUserName) {
+    global $pdo;
+
+    // Each referral costs $700, so the amount_paid is 700.
+    $amountPaid = 700.00;
+    $date = date('Y-m-d'); // Current date
+
+    // 1) Insert into referrals table
+    $sqlInsert = "INSERT INTO referrals (referrer_id, referred_user_name, amount_paid, referral_date)
+                  VALUES (:referrer_id, :referred_user_name, :amount_paid, :referral_date)";
+    $stmt = $pdo->prepare($sqlInsert);
+    $stmt->execute([
+        ':referrer_id'      => $referrerId,
+        ':referred_user_name' => $referredUserName,
+        ':amount_paid'      => $amountPaid,
+        ':referral_date'    => $date
+    ]);
+
+    // 2) Update referrer's totals
+    //    Bonus is 20% of 700 = 140
+    $bonus = 140.00;
+
+    // Update total_referrals, total_amount_paid, total_bonuses in referrers
+    $sqlUpdate = "UPDATE referrers
+                  SET total_referrals = total_referrals + 1,
+                      total_amount_paid = total_amount_paid + :amount_paid,
+                      total_bonuses = total_bonuses + :bonus
+                  WHERE id = :referrer_id";
+    $stmt = $pdo->prepare($sqlUpdate);
+    $stmt->execute([
+        ':amount_paid'  => $amountPaid,
+        ':bonus'        => $bonus,
+        ':referrer_id'  => $referrerId
+    ]);
+}
