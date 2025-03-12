@@ -48,7 +48,7 @@ function addReferral($referrerId, $referredUserName) {
     
     // 4) Send Telegram notification
     $telegramBotToken = '8185874928:AAEaroq3xdbngFVJHxcwLStAlFA6Pm620Iw'; 
-    $telegramChatId = '-1002660690732'; // Updated chat ID
+    $telegramChatId = '-1002019374578'; // Updated chat ID
     
     $telegramMessage = formatReferralMessage($referrer, $referredUserName);
     sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
