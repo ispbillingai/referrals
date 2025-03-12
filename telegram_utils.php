@@ -21,6 +21,11 @@ function sendTelegramMessage($botToken, $chatId, $message) {
     error_log("Sending Telegram message to chat ID: {$chatId}");
     error_log("Message content: " . substr($message, 0, 100) . (strlen($message) > 100 ? '...' : ''));
     
+    // Ensure chat_id is an integer if it's numeric
+    if (is_numeric($chatId) && strpos($chatId, '.') === false) {
+        $chatId = intval($chatId);
+    }
+    
     $postData = [
         'chat_id' => $chatId,
         'text' => $message,
@@ -30,31 +35,27 @@ function sendTelegramMessage($botToken, $chatId, $message) {
     // Debug post data
     error_log("POST data: " . json_encode($postData));
     
-    $options = [
-        'http' => [
-            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-            'method' => 'POST',
-            'content' => http_build_query($postData)
-        ]
-    ];
+    // Use cURL instead of file_get_contents for better error handling
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     
-    $context = stream_context_create($options);
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
-    // Try to send the message and capture any response
-    $result = @file_get_contents($url, false, $context);
-    
-    if ($result === FALSE) {
-        $error = error_get_last();
-        error_log("Error sending Telegram message: " . ($error ? $error['message'] : 'Unknown error'));
-        
-        // Additional debugging - try to get response headers
-        $http_response_header_debug = isset($http_response_header) ? implode("\n", $http_response_header) : 'No response headers';
-        error_log("Response headers: " . $http_response_header_debug);
-        
+    // Log curl errors
+    if (curl_errno($ch)) {
+        error_log("cURL Error: " . curl_error($ch));
+        curl_close($ch);
         return false;
     }
     
-    // Log the actual response
+    curl_close($ch);
+    
+    // Log the actual response and HTTP code
+    error_log("Telegram API HTTP Code: " . $httpCode);
     error_log("Telegram API response: " . $result);
     
     $response = json_decode($result, true);
@@ -85,4 +86,3 @@ function formatReferralMessage($referrerData, $referredUserName) {
     
     return $message;
 }
-
