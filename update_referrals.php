@@ -1,4 +1,3 @@
-
 <?php
 /**
  * update_referrals.php
@@ -154,7 +153,7 @@ try {
 
     // 4. Send Telegram notification
     $telegramBotToken = ''; // Replace with your Telegram bot token
-    $telegramChatId = '123456677'; // The chat ID provided by the user
+    $telegramChatId = '-4602653603'; // Updated chat ID
     
     $telegramMessage = formatReferralMessage($referrer, $data['referred_user_name']);
     sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
