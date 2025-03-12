@@ -67,6 +67,7 @@
       </h3>
     </div>
     
+    <!-- Table with totals row -->
     <div class="overflow-x-auto bg-white shadow-lg rounded-2xl mb-8">
       <table class="min-w-full table-auto">
         <thead class="bg-indigo-50">
@@ -82,37 +83,48 @@
           </tr>
         </thead>
         <tbody>
-          <?php if (!empty($weeklyLeaders)): ?>
-            <?php $rank = 1; ?>
-            <?php foreach ($weeklyLeaders as $leader): ?>
-              <?php
-                // Only give bonuses to top 3 users as per the requirement
-                $bonus = ($rank <= 3) ? $leader['number_of_referrals'] * 140 : 0;
-                $totalPayout = $leader['total_amount_paid'] + $bonus;
+          <?php 
+          if (!empty($weeklyLeaders)): 
+            $rank = 1;
+            $totalReferrals = 0;
+            $totalAmountPaid = 0;
+            $totalBonus = 0;
+            $totalPayout = 0;
+            
+            foreach ($weeklyLeaders as $leader): 
+              // Calculate values
+              $bonus = ($rank <= 3) ? $leader['number_of_referrals'] * 140 : 0;
+              $totalPayout = $leader['total_amount_paid'] + $bonus;
+              
+              // Add to totals
+              $totalReferrals += $leader['number_of_referrals'];
+              $totalAmountPaid += $leader['total_amount_paid'];
+              $totalBonus += $bonus;
+              $totalPayout += $leader['total_amount_paid'];
+              
+              if     ($rank === 1) $medal = '🥇';
+              elseif ($rank === 2) $medal = '🥈';
+              elseif ($rank === 3) $medal = '🥉';
+              else                 $medal = $rank;
 
-                if     ($rank === 1) $medal = '🥇';
-                elseif ($rank === 2) $medal = '🥈';
-                elseif ($rank === 3) $medal = '🥉';
-                else                 $medal = $rank;
-
-                // New company display logic with ispledger.com domain
-                $companiesOutput = '<em class="text-gray-400">No companies</em>';
-                if (isset($leader['companies']) && !empty($leader['companies'])) {
-                  $companiesArr = explode(',', $leader['companies']);
-                  $totalCompanies = count($companiesArr);
-                  
-                  $companiesOutput = '<div class="flex items-center gap-2">
-                    <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors view-companies" data-companies="' . htmlspecialchars(json_encode($companiesArr)) . '">
-                      Click to view ' . $totalCompanies . ' companies
-                    </button>
-                  </div>';
-                }
-
-                $rowClass = $rank <= 3 ? 'bg-gradient-to-r from-indigo-50/50 to-transparent' : '';
+              // New company display logic with ispledger.com domain
+              $companiesOutput = '<em class="text-gray-400">No companies</em>';
+              if (isset($leader['companies']) && !empty($leader['companies'])) {
+                $companiesArr = explode(',', $leader['companies']);
+                $totalCompanies = count($companiesArr);
                 
-                // Display payout number instead of phone number
-                $payoutNumber = isset($leader['payout_number']) ? htmlspecialchars($leader['payout_number']) : 'N/A';
-              ?>
+                $companiesOutput = '<div class="flex items-center gap-2">
+                  <button class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors view-companies" data-companies="' . htmlspecialchars(json_encode($companiesArr)) . '">
+                    Click to view ' . $totalCompanies . ' companies
+                  </button>
+                </div>';
+              }
+
+              $rowClass = $rank <= 3 ? 'bg-gradient-to-r from-indigo-50/50 to-transparent' : '';
+              
+              // Display payout number instead of phone number
+              $payoutNumber = isset($leader['payout_number']) ? htmlspecialchars($leader['payout_number']) : 'N/A';
+            ?>
               <tr class="border-b hover:bg-gray-50 transition-colors <?php echo $rowClass; ?>">
                 <td class="py-4 px-6 text-xl"><?php echo $medal; ?></td>
                 <td class="py-4 px-6 font-medium"><?php echo htmlspecialchars($leader['name']); ?></td>
@@ -123,8 +135,19 @@
                 <td class="py-4 px-6 font-medium">Ksh <?php echo number_format($totalPayout, 2); ?></td>
                 <td class="py-4 px-6"><?php echo $payoutNumber; ?></td>
               </tr>
-              <?php $rank++; ?>
-            <?php endforeach; ?>
+            <?php 
+              $rank++;
+            endforeach; 
+            ?>
+            <!-- Totals Row -->
+            <tr class="bg-gray-50 font-bold border-t-2 border-gray-200">
+              <td colspan="3" class="py-3 px-6">TOTALS</td>
+              <td class="py-3 px-6"><?php echo $totalReferrals; ?></td>
+              <td class="py-3 px-6">Ksh <?php echo number_format($totalAmountPaid, 2); ?></td>
+              <td class="py-3 px-6">Ksh <?php echo number_format($totalBonus, 2); ?></td>
+              <td class="py-3 px-6">Ksh <?php echo number_format($totalPayout, 2); ?></td>
+              <td class="py-3 px-6">--</td>
+            </tr>
           <?php else: ?>
             <tr>
               <td colspan="8" class="py-8 px-6 text-center text-gray-500">No referrals data for this week offset.</td>
@@ -133,6 +156,7 @@
         </tbody>
       </table>
     </div>
+
   </div>
   <?php endfor; ?>
   
