@@ -1,60 +1,73 @@
+
 <?php
 // functions/referral_functions.php
 require_once __DIR__ . '/db.php'; // ensures $pdo is set
 
-
-function getMonthlyLeaders() {
+/**
+ * Get monthly leaderboard data with offset
+ * @param int $offset Number of months to go back (0 = current month)
+ * @return array Array of leaders data
+ */
+function getMonthlyLeaders($offset = 0) {
     global $pdo;
 
     $sql = "
         SELECT r.id,
                r.name,
+               GROUP_CONCAT(DISTINCT ref.referred_user_name) AS companies,
                COUNT(ref.id) AS number_of_referrals,
                SUM(ref.amount_paid) AS total_amount_paid,
                COUNT(ref.id) * 140 AS total_bonuses
         FROM referrers r
         LEFT JOIN referrals ref
                ON r.id = ref.referrer_id
-               AND MONTH(ref.referral_date) = MONTH(CURDATE())
-               AND YEAR(ref.referral_date) = YEAR(CURDATE())
+               AND MONTH(ref.referral_date) = MONTH(DATE_SUB(CURDATE(), INTERVAL :offset MONTH))
+               AND YEAR(ref.referral_date) = YEAR(DATE_SUB(CURDATE(), INTERVAL :offset MONTH))
         GROUP BY r.id
-        ORDER BY number_of_referrals DESC
+        ORDER BY number_of_referrals DESC, total_amount_paid DESC
         LIMIT 10
     ";
-    // limit to 10 or top 5 for monthly
 
-    $stmt = $pdo->query($sql);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':offset' => $offset]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function getWeeklyLeaders() {
+/**
+ * Get weekly leaderboard data with offset
+ * @param int $offset Number of weeks to go back (0 = current week)
+ * @return array Array of leaders data
+ */
+function getWeeklyLeaders($offset = 0) {
     global $pdo;
 
     $sql = "
         SELECT r.id,
                r.name,
+               GROUP_CONCAT(DISTINCT ref.referred_user_name) AS companies,
                COUNT(ref.id) AS number_of_referrals,
                SUM(ref.amount_paid) AS total_amount_paid,
-               COUNT(ref.id) * 140 AS total_bonuses  -- 20% of 700 = 140
+               COUNT(ref.id) * 140 AS total_bonuses
         FROM referrers r
         LEFT JOIN referrals ref
                ON r.id = ref.referrer_id
-               AND YEARWEEK(ref.referral_date, 1) = YEARWEEK(CURDATE(), 1)
+               AND YEARWEEK(ref.referral_date, 1) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL :offset WEEK), 1)
         GROUP BY r.id
-        ORDER BY number_of_referrals DESC
+        ORDER BY number_of_referrals DESC, total_amount_paid DESC
         LIMIT 10
     ";
-    // limit to 10 or the top 3, your choice
 
-    $stmt = $pdo->query($sql);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':offset' => $offset]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+/**
+ * Fetch weekly referrals with offset
+ * @param int $offset Number of weeks to go back (0 = current week)
+ * @return array Array of referral data
+ */
 function getWeeklyReferrals($offset = 0) {
-    // Example logic: we want the (YEARWEEK(referral_date)) to match
-    // the YEARWEEK of (CURDATE() - $offset weeks).
-    // This approach uses MySQL's YEARWEEK(...) function with mode 1 (ISO).
-    // Adjust if your environment differs.
     global $pdo;
     $sql = "
       SELECT *
@@ -68,14 +81,12 @@ function getWeeklyReferrals($offset = 0) {
 }
 
 /**
- * Fetch referrals for a given monthly offset
- * $offset = 0 => current month
- * $offset = 1 => 1 month ago
+ * Fetch monthly referrals with offset
+ * @param int $offset Number of months to go back (0 = current month)
+ * @return array Array of referral data
  */
 function getMonthlyReferrals($offset = 0) {
     global $pdo;
-    // We'll handle month offset by subtracting $offset months from CURDATE()
-    // Then matching YEAR() and MONTH() to that date
     $sql = "
       SELECT *
       FROM referrals
@@ -86,4 +97,48 @@ function getMonthlyReferrals($offset = 0) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':offset' => $offset]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Add a new referral to the system
+ * @param int $referrerId The ID of the referrer
+ * @param string $referredUserName Name of the referred user/company
+ * @return bool True if successful
+ */
+function addReferral($referrerId, $referredUserName) {
+    global $pdo;
+
+    // Each referral costs $700, so the amount_paid is 700.
+    $amountPaid = 700.00;
+    $date = date('Y-m-d'); // Current date
+
+    // 1) Insert into referrals table
+    $sqlInsert = "INSERT INTO referrals (referrer_id, referred_user_name, amount_paid, referral_date)
+                  VALUES (:referrer_id, :referred_user_name, :amount_paid, :referral_date)";
+    $stmt = $pdo->prepare($sqlInsert);
+    $stmt->execute([
+        ':referrer_id'      => $referrerId,
+        ':referred_user_name' => $referredUserName,
+        ':amount_paid'      => $amountPaid,
+        ':referral_date'    => $date
+    ]);
+
+    // 2) Update referrer's totals
+    //    Bonus is 20% of 700 = 140
+    $bonus = 140.00;
+
+    // Update total_referrals, total_amount_paid, total_bonuses in referrers
+    $sqlUpdate = "UPDATE referrers
+                  SET total_referrals = total_referrals + 1,
+                      total_amount_paid = total_amount_paid + :amount_paid,
+                      total_bonuses = total_bonuses + :bonus
+                  WHERE id = :referrer_id";
+    $stmt = $pdo->prepare($sqlUpdate);
+    $stmt->execute([
+        ':amount_paid'  => $amountPaid,
+        ':bonus'        => $bonus,
+        ':referrer_id'  => $referrerId
+    ]);
+    
+    return true;
 }
