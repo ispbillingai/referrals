@@ -1,4 +1,3 @@
-
 <?php
 /**
  * update_referrals.php
@@ -47,7 +46,6 @@ if (strtolower($data['company_name']) === 'freeispradius') {
     exit;
 }
 
-// Include your database configuration (ensure this file sets up a PDO instance in $pdo)
 require_once 'config.php';
 
 try {
@@ -57,32 +55,25 @@ try {
     $referrer = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$referrer) {
-        // No matching referrer found by name, check if exists by phone number
-        $stmt = $pdo->prepare("SELECT id, name, phone_number FROM referrers WHERE phone_number = :phone_number LIMIT 1");
-        $stmt->execute([':phone_number' => $data['phone_number']]);
-        $referrer = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Create a new referrer record - no need to check phone number duplicates
+        $stmt = $pdo->prepare("
+            INSERT INTO referrers (name, phone_number, total_referrals, total_amount_paid, total_bonuses) 
+            VALUES (:name, :phone_number, 0, 0, 0)
+        ");
+        $stmt->execute([
+            ':name'         => $data['company_name'],
+            ':phone_number' => $data['phone_number']
+        ]);
         
-        if (!$referrer) {
-            // Neither name nor phone number found, create a new referrer record
-            $stmt = $pdo->prepare("
-                INSERT INTO referrers (name, phone_number, total_referrals, total_amount_paid, total_bonuses) 
-                VALUES (:name, :phone_number, 0, 0, 0)
-            ");
-            $stmt->execute([
-                ':name'         => $data['company_name'],
-                ':phone_number' => $data['phone_number']
-            ]);
-            
-            // Get the new referrer's ID
-            $referrerId = $pdo->lastInsertId();
-            
-            // Prepare a minimal referrer array for later use
-            $referrer = [
-                'id' => $referrerId, 
-                'name' => $data['company_name'], 
-                'phone_number' => $data['phone_number']
-            ];
-        }
+        // Get the new referrer's ID
+        $referrerId = $pdo->lastInsertId();
+        
+        // Prepare a minimal referrer array for later use
+        $referrer = [
+            'id' => $referrerId, 
+            'name' => $data['company_name'], 
+            'phone_number' => $data['phone_number']
+        ];
     }
     
     $referrerId = $referrer['id'];
