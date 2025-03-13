@@ -12,9 +12,10 @@
  * @param string $botToken The Telegram bot token
  * @param string $chatId The chat ID to send the message to
  * @param string $message The message to send
+ * @param int|null $messageThreadId Optional topic ID for forum groups
  * @return bool True if successful, false otherwise
  */
-function sendTelegramMessage($botToken, $chatId, $message) {
+function sendTelegramMessage($botToken, $chatId, $message, $messageThreadId = null) {
     $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
     
     // Add debug logging
@@ -31,6 +32,12 @@ function sendTelegramMessage($botToken, $chatId, $message) {
         'text' => $message,
         'parse_mode' => 'HTML'
     ];
+    
+    // Add message_thread_id if provided (for forum topics)
+    if ($messageThreadId !== null) {
+        $postData['message_thread_id'] = $messageThreadId;
+        error_log("Using message thread ID: {$messageThreadId}");
+    }
     
     // Debug post data
     error_log("POST data: " . json_encode($postData));

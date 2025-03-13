@@ -152,10 +152,11 @@ function addReferral($referrerId, $referredUserName) {
     
     // 4) Send Telegram notification
     $telegramBotToken = '8185874928:AAEaroq3xdbngFVJHxcwLStAlFA6Pm620Iw';
-    $telegramChatId = '-1002019374578'; // Updated to the correct chat ID
+    $telegramChatId = '-1002019374578'; // Chat ID
+    $telegramTopicId = 1053; // Topic ID for forum threads
     
     $telegramMessage = formatReferralMessage($referrer, $referredUserName);
-    sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
+    sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage, $telegramTopicId);
     
     return true;
 }

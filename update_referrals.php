@@ -1,4 +1,3 @@
-
 <?php
 /**
  * update_referrals.php
@@ -154,10 +153,11 @@ try {
 
     // 4. Send Telegram notification
     $telegramBotToken = '8185874928:AAEaroq3xdbngFVJHxcwLStAlFA6Pm620Iw'; 
-    $telegramChatId = '-1002019374578'; // Updated to correct chat ID
+    $telegramChatId = '-1002019374578'; // Chat ID
+    $telegramTopicId = 1053; // Topic ID for forum threads
     
     $telegramMessage = formatReferralMessage($referrer, $data['referred_user_name']);
-    sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage);
+    sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage, $telegramTopicId);
 
     // 5. Return a success JSON response
     echo json_encode([
