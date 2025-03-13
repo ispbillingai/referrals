@@ -160,3 +160,4 @@ function addReferral($referrerId, $referredUserName) {
     
     return true;
 }
+

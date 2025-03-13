@@ -5,6 +5,22 @@
 <section id="weeklySection">
   <h2 class="text-3xl font-bold mb-6 text-gray-800">Weekly Leaderboard</h2>
 
+  <!-- Prize sharing note -->
+  <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <p class="text-sm text-yellow-700">
+          <strong>Note about ties:</strong> If multiple referrers tie for a position, the prize amount will be shared equally among them. For example, if 4 referrers tie for a position with a prize of Ksh 1,000, each will receive Ksh 250.
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- Enhanced Sub-tabs -->
   <div class="flex space-x-3 mb-6 overflow-x-auto pb-2">
     <?php 
