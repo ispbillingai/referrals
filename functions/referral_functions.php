@@ -1,4 +1,3 @@
-
 <?php
 // functions/referral_functions.php
 require_once __DIR__ . '/db.php'; // ensures $pdo is set
@@ -104,6 +103,36 @@ function getMonthlyReferrals($offset = 0) {
 }
 
 /**
+ * Send WhatsApp message using the WhatsApp API
+ * @param string $phoneNumber The phone number to send the message to
+ * @param string $message The message content
+ * @return bool True if successful, false otherwise
+ */
+function sendWhatsAppMessage($phoneNumber, $message) {
+    // Format the phone number (remove any non-numeric characters)
+    $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
+    
+    // Secret key for the WhatsApp API
+    $secret = 'f1747ee4ecdfb092e09efd3748dcdb47';
+    
+    // Encode the message for URL 
+    $encodedMessage = urlencode($message);
+    
+    // Construct the API URL
+    $apiUrl = "https://whatsapp.ispledger.com/api/sendWA?to={$phoneNumber}&msg={$encodedMessage}&secret={$secret}";
+    
+    // Send the request
+    $response = file_get_contents($apiUrl);
+    
+    // Log the request and response
+    error_log("WhatsApp API Request: {$apiUrl}");
+    error_log("WhatsApp API Response: {$response}");
+    
+    // Check if request was successful
+    return ($response !== false);
+}
+
+/**
  * Add a new referral to the system
  * @param int $referrerId The ID of the referrer
  * @param string $referredUserName Name of the referred user/company
@@ -143,6 +172,26 @@ function addReferral($referrerId, $referredUserName) {
         ':bonus'        => $bonus,
         ':referrer_id'  => $referrerId
     ]);
+    
+    // 3) Get referrer information for notification
+    $sqlGetReferrer = "SELECT * FROM referrers WHERE id = :referrer_id";
+    $stmt = $pdo->prepare($sqlGetReferrer);
+    $stmt->execute([':referrer_id' => $referrerId]);
+    $referrer = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // 4) Send Telegram notification
+    $telegramBotToken = '8185874928:AAEaroq3xdbngFVJHxcwLStAlFA6Pm620Iw'; 
+    $telegramChatId = '-1002019374578'; // Chat ID
+    $telegramTopicId = 1053; // Topic ID for forum threads
+    
+    $telegramMessage = formatReferralMessage($referrer, $referredUserName);
+    sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage, $telegramTopicId);
+    
+    // 5) Send WhatsApp notification
+    if (isset($referrer['phone_number']) && !empty($referrer['phone_number'])) {
+        $whatsAppMessage = "Hello {$referrer['name']}, your referral {$referredUserName} has been successfully signed up! Check your position on the leaderboard at referrals.ispledger.com and follow our Telegram channel at t.me/freeispradius for payout status.";
+        sendWhatsAppMessage($referrer['phone_number'], $whatsAppMessage);
+    }
     
     return true;
 }

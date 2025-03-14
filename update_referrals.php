@@ -1,3 +1,4 @@
+
 <?php
 /**
  * update_referrals.php
@@ -48,6 +49,36 @@ if (strtolower($data['company_name']) === 'freeispradius') {
 
 require_once 'config.php';
 require_once 'functions/telegram_utils.php';
+
+/**
+ * Send WhatsApp message using the WhatsApp API
+ * @param string $phoneNumber The phone number to send the message to
+ * @param string $message The message content
+ * @return bool True if successful, false otherwise
+ */
+function sendWhatsAppMessage($phoneNumber, $message) {
+    // Format the phone number (remove any non-numeric characters)
+    $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
+    
+    // Secret key for the WhatsApp API
+    $secret = 'f1747ee4ecdfb092e09efd3748dcdb47';
+    
+    // Encode the message for URL 
+    $encodedMessage = urlencode($message);
+    
+    // Construct the API URL
+    $apiUrl = "https://whatsapp.ispledger.com/api/sendWA?to={$phoneNumber}&msg={$encodedMessage}&secret={$secret}";
+    
+    // Send the request
+    $response = file_get_contents($apiUrl);
+    
+    // Log the request and response
+    error_log("WhatsApp API Request: {$apiUrl}");
+    error_log("WhatsApp API Response: {$response}");
+    
+    // Check if request was successful
+    return ($response !== false);
+}
 
 try {
     // 1. Look up the referrer by company_name (using the 'name' column)
@@ -158,8 +189,14 @@ try {
     
     $telegramMessage = formatReferralMessage($referrer, $data['referred_user_name']);
     sendTelegramMessage($telegramBotToken, $telegramChatId, $telegramMessage, $telegramTopicId);
+    
+    // 5. Send WhatsApp notification
+    if (isset($referrer['phone_number']) && !empty($referrer['phone_number'])) {
+        $whatsAppMessage = "Hello {$referrer['name']}, your referral {$data['referred_user_name']} has been successfully signed up! Check your position on the leaderboard at referrals.ispledger.com and follow our Telegram channel at t.me/freeispradius for payout status.";
+        sendWhatsAppMessage($referrer['phone_number'], $whatsAppMessage);
+    }
 
-    // 5. Return a success JSON response
+    // 6. Return a success JSON response
     echo json_encode([
         'status'  => 'success',
         'message' => 'Referral updated successfully for referrer: ' . $referrer['name']
