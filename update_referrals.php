@@ -61,7 +61,7 @@ function sendWhatsAppMessage($phoneNumber, $message) {
     $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
     
     // Secret key for the WhatsApp API
-    $secret = 'f1747ee4ecdfb092e09efd3748dcdb47';
+    $secret = '9ce41efa34caca533c86cedb62f1f4b5';
     
     // Encode the message for URL 
     $encodedMessage = urlencode($message);
