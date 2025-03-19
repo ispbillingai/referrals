@@ -1,4 +1,3 @@
-
 <?php
 // functions/referral_functions.php
 require_once __DIR__ . '/db.php'; // ensures $pdo is set
@@ -27,7 +26,6 @@ function getMonthlyLeaders($offset = 0) {
         GROUP BY r.id, r.name, r.phone_number
         HAVING number_of_referrals > 0
         ORDER BY number_of_referrals DESC, total_amount_paid DESC
-        LIMIT 10
     ";
 
     $stmt = $pdo->prepare($sql);
