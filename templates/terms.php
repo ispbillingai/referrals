@@ -25,6 +25,7 @@
     
     <h3 class="text-lg font-medium mt-5 mb-2">3. Bonus Payments</h3>
     <p class="mb-4">Bonuses will only be paid for verified active accounts and top 3 account weekly referrers. If the account won't be having any transactions you won't be paid the 20% bonus only the Ksh 700 will be paid.</p>
+    <p class="mb-4"><strong>Monthly Bonus Qualification:</strong> To qualify for the monthly bonus, you must have referred at least 5 active accounts during that month. If you do not meet this minimum requirement, you will only receive the base payment of Ksh 700 per referral without any bonus.</p>
     
     <h3 class="text-lg font-medium mt-5 mb-2">4. Referral Limits</h3>
     <p class="mb-4">There is no limit to how many people you can refer. However, we reserve the right to investigate unusually high volumes of referrals.</p>
